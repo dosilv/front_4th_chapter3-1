@@ -66,7 +66,7 @@ const mockEvents: Event[] = [
   },
 ];
 
-const TEST_DATE = new Date('2025-02-01');
+const MOCK_DATE = '2025-02-01';
 
 // 공통 renderHook 로직 추출
 const getRenderedHook = (view: 'week' | 'month') => {
@@ -80,7 +80,7 @@ const getRenderedHook = (view: 'week' | 'month') => {
 beforeAll(() => {
   process.env.TZ = 'UTC';
   vi.useFakeTimers();
-  vi.setSystemTime(TEST_DATE);
+  vi.setSystemTime(new Date(MOCK_DATE));
 });
 
 it('검색어가 비어있을 때 모든 이벤트를 반환해야 한다', () => {

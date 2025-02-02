@@ -43,10 +43,11 @@ it("view를 'week'으로 변경 시 적절하게 반영된다", () => {
 });
 
 describe('navigate 테스트', () => {
+  const MOCK_DATE = '2024-10-01';
+
   beforeEach(() => {
     vi.useFakeTimers();
-    const mockDate = new Date('2024-10-01');
-    vi.setSystemTime(mockDate);
+    vi.setSystemTime(new Date(MOCK_DATE));
   });
 
   it("주간 뷰에서 다음으로 navigate시 7일 후 '2024-10-08' 날짜로 지정이 된다", () => {
