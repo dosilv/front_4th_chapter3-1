@@ -135,31 +135,93 @@ describe('getWeeksAtMonth', () => {
 });
 
 describe('getEventsForDay', () => {
-  it('특정 날짜(1일)에 해당하는 이벤트만 정확히 반환한다', () => {});
+  const mockEvents: Event[] = [
+    {
+      id: '1',
+      title: '모각코 💻🔥',
+      date: '2025-02-01',
+      startTime: '22:00',
+      endTime: '24:00',
+      description: 'chapter3-1 과제',
+      location: 'zep',
+      category: '개인',
+      repeat: { type: 'none', interval: 0 },
+      notificationTime: 1,
+    },
+    {
+      id: '2',
+      title: '과제 제출 😱',
+      date: '2025-02-05',
+      startTime: '10:00',
+      endTime: '10:00',
+      description: 'chapter3-1 과제 제출',
+      location: '항해 홈페이지',
+      category: '기타',
+      repeat: { type: 'none', interval: 0 },
+      notificationTime: 1,
+    },
+    {
+      id: '3',
+      title: '삼일절 🇰🇷',
+      date: '2025-03-01',
+      startTime: '00:00',
+      endTime: '24:00',
+      description: '국경일',
+      location: '🏠',
+      category: '기타',
+      repeat: { type: 'none', interval: 0 },
+      notificationTime: 1,
+    },
+  ];
 
-  it('해당 날짜에 이벤트가 없을 경우 빈 배열을 반환한다', () => {});
+  it('특정 날짜(1일)에 해당하는 이벤트만 정확히 반환한다', () => {
+    expect(getEventsForDay(mockEvents, 1)).toEqual([mockEvents[0], mockEvents[2]]);
+  });
 
-  it('날짜가 0일 경우 빈 배열을 반환한다', () => {});
+  it('해당 날짜에 이벤트가 없을 경우 빈 배열을 반환한다', () => {
+    expect(getEventsForDay(mockEvents, 2)).toEqual([]);
+  });
 
-  it('날짜가 32일 이상인 경우 빈 배열을 반환한다', () => {});
+  it('날짜가 0일 경우 빈 배열을 반환한다', () => {
+    expect(getEventsForDay(mockEvents, 0)).toEqual([]);
+  });
+
+  it('날짜가 32일 이상인 경우 빈 배열을 반환한다', () => {
+    expect(getEventsForDay(mockEvents, 32)).toEqual([]);
+  });
 });
 
 describe('formatWeek', () => {
-  it('월의 중간 날짜에 대해 올바른 주 정보를 반환한다', () => {});
+  it('월의 중간 날짜에 대해 올바른 주 정보를 반환한다', () => {
+    expect(formatWeek(new Date('2025-02-14'))).toBe('2025년 2월 2주');
+  });
 
-  it('월의 첫 주에 대해 올바른 주 정보를 반환한다', () => {});
+  it('월의 첫 주에 대해 올바른 주 정보를 반환한다', () => {
+    expect(formatWeek(new Date('2025-02-02'))).toBe('2025년 2월 1주');
+  });
 
-  it('월의 마지막 주에 대해 올바른 주 정보를 반환한다', () => {});
+  it('월의 마지막 주에 대해 올바른 주 정보를 반환한다', () => {
+    expect(formatWeek(new Date('2025-02-28'))).toBe('2025년 2월 4주');
+  });
 
-  it('연도가 바뀌는 주에 대해 올바른 주 정보를 반환한다', () => {});
+  it('연도가 바뀌는 주에 대해 올바른 주 정보를 반환한다', () => {
+    console.log(getWeeksAtMonth(new Date('2024-12-01')));
+    expect(formatWeek(new Date('2024-12-31'))).toBe('2025년 1월 1주');
+  });
 
-  it('윤년 2월의 마지막 주에 대해 올바른 주 정보를 반환한다', () => {});
+  it('윤년 2월의 마지막 주에 대해 올바른 주 정보를 반환한다', () => {
+    expect(formatWeek(new Date('2024-02-29'))).toBe('2024년 2월 5주');
+  });
 
-  it('평년 2월의 마지막 주에 대해 올바른 주 정보를 반환한다', () => {});
+  it('평년 2월의 마지막 주에 대해 올바른 주 정보를 반환한다', () => {
+    expect(formatWeek(new Date('2025-02-28'))).toBe('2025년 2월 4주');
+  });
 });
 
 describe('formatMonth', () => {
-  it("2024년 7월 10일을 '2024년 7월'로 반환한다", () => {});
+  it("2024년 7월 10일을 '2024년 7월'로 반환한다", () => {
+    expect(formatMonth(new Date('2024-07-10'))).toBe('2024년 7월');
+  });
 });
 
 describe('isDateInRange', () => {
