@@ -10,10 +10,12 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
   const fetchEvents = async () => {
     try {
       const response = await fetch('/api/events');
+      console.log(response);
       if (!response.ok) {
         throw new Error('Failed to fetch events');
       }
       const { events } = await response.json();
+      console.log(events);
       setEvents(events);
     } catch (error) {
       console.error('Error fetching events:', error);
@@ -35,6 +37,8 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(eventData),
         });
+        console.log(response);
+        console.log('~~~~~~~~~~잉??!!??!');
       } else {
         response = await fetch('/api/events', {
           method: 'POST',
@@ -55,7 +59,9 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
         duration: 3000,
         isClosable: true,
       });
+      console.log('~~~~~~~~~~얘가왜찍히지???');
     } catch (error) {
+      console.log('~~~~~~~~~~!!!');
       console.error('Error saving event:', error);
       toast({
         title: '일정 저장 실패',
