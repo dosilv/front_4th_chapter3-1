@@ -58,7 +58,6 @@ describe('getFilteredEvents', () => {
 
   beforeAll(() => {
     process.env.TZ = 'UTC';
-    vi.useFakeTimers();
     vi.setSystemTime(new Date(DEFAULT_MOCK_DATE));
   });
 

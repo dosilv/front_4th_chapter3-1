@@ -56,7 +56,6 @@ const MOCK_DATE = '2025-02-01T21:59:59';
 
 beforeAll(() => {
   process.env.TZ = 'UTC';
-  vi.useFakeTimers();
   vi.setSystemTime(new Date(MOCK_DATE));
 });
 

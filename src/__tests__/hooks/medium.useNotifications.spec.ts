@@ -28,6 +28,7 @@ it('초기 상태에서는 알림이 없어야 한다', () => {
 
 it('지정된 시간이 된 경우 알림이 새롭게 생성되어 추가된다', async () => {
   vi.useFakeTimers();
+
   const MOCK_DATETIME = '2025-02-01T22:58';
   vi.setSystemTime(new Date(MOCK_DATETIME));
   const { result } = renderHook(() => useNotifications(mockEvents));

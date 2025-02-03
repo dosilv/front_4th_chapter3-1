@@ -79,7 +79,6 @@ const getRenderedHook = (view: 'week' | 'month') => {
 
 beforeAll(() => {
   process.env.TZ = 'UTC';
-  vi.useFakeTimers();
   vi.setSystemTime(new Date(MOCK_DATE));
 });
 

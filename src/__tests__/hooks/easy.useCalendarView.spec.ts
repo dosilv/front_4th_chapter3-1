@@ -5,7 +5,6 @@ import { assertDate } from '../utils.ts';
 
 describe('초기 상태', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
     const mockDate = new Date('2024-10-01');
     vi.setSystemTime(mockDate);
   });
@@ -46,7 +45,6 @@ describe('navigate 테스트', () => {
   const MOCK_DATE = '2024-10-01';
 
   beforeEach(() => {
-    vi.useFakeTimers();
     vi.setSystemTime(new Date(MOCK_DATE));
   });
 

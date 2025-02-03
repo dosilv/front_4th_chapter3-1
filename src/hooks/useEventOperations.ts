@@ -29,7 +29,6 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
   const saveEvent = async (eventData: Event | EventForm) => {
     try {
       let response;
-      console.log(eventData);
       if (editing) {
         response = await fetch(`/api/events/${(eventData as Event).id}`, {
           method: 'PUT',
