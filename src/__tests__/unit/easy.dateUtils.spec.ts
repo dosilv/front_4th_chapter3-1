@@ -37,6 +37,10 @@ describe('getDaysInMonth', () => {
 });
 
 describe('getWeekDates', () => {
+  beforeAll(() => {
+    process.env.TZ = 'UTC';
+  });
+
   it('주중의 날짜(수요일)에 대해 올바른 주의 날짜들을 반환한다', () => {
     expect(getWeekDates(new Date('2025-02-05'))).toEqual([
       new Date('2025-02-02'),
