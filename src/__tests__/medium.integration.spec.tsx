@@ -160,15 +160,61 @@ describe('일정 CRUD 및 기본 기능', () => {
 });
 
 describe('일정 뷰', () => {
-  it('주별 뷰를 선택 후 해당 주에 일정이 없으면, 일정이 표시되지 않는다.', async () => {});
+  it('주별 뷰를 선택 후 해당 주에 일정이 없으면, 일정이 표시되지 않는다.', async () => {
+    const weekViewBtn = screen.getByLabelText('view');
+    await userEvent.selectOptions(weekViewBtn, 'week');
 
-  it('주별 뷰 선택 후 해당 일자에 일정이 존재한다면 해당 일정이 정확히 표시된다', async () => {});
+    const weekView = screen.getByTestId('week-view');
+    expect(within(weekView).getByText('2025년 2월 1주')).toBeInTheDocument();
+    expect(within(weekView).queryByTestId('event-item')).toBeNull();
+  });
 
-  it('월별 뷰에 일정이 없으면, 일정이 표시되지 않아야 한다.', async () => {});
+  it('주별 뷰 선택 후 해당 일자에 일정이 존재한다면 해당 일정이 정확히 표시된다', async () => {
+    const weekViewBtn = screen.getByLabelText('view');
+    await userEvent.selectOptions(weekViewBtn, 'week');
 
-  it('월별 뷰에 일정이 정확히 표시되는지 확인한다', async () => {});
+    const prevBtn = screen.getByLabelText('Previous');
+    await userEvent.click(prevBtn);
 
-  it('달력에 1월 1일(신정)이 공휴일로 표시되는지 확인한다', async () => {});
+    const weekView = screen.getByTestId('week-view');
+    expect(within(weekView).getByText('2025년 1월 5주')).toBeInTheDocument();
+    expect(within(weekView).getByText('기존 회의')).toBeInTheDocument();
+  });
+
+  it('월별 뷰에 일정이 없으면, 일정이 표시되지 않아야 한다.', async () => {
+    const monthViewBtn = screen.getByLabelText('view');
+    await userEvent.selectOptions(monthViewBtn, 'month');
+
+    const nextBtn = screen.getByLabelText('Next');
+    await userEvent.click(nextBtn);
+
+    const monthView = screen.getByTestId('month-view');
+    expect(within(monthView).getByText('2025년 3월')).toBeInTheDocument();
+    expect(within(monthView).queryByTestId('event-item')).toBeNull();
+  });
+
+  it('월별 뷰에 일정이 정확히 표시되는지 확인한다', async () => {
+    const monthViewBtn = screen.getByLabelText('view');
+    await userEvent.selectOptions(monthViewBtn, 'month');
+
+    expect(screen.getByText('2025년 2월')).toBeInTheDocument();
+
+    const monthView = screen.getByTestId('month-view');
+    expect(within(monthView).getByText('기존 회의')).toBeInTheDocument();
+  });
+
+  it('달력에 1월 1일(신정)이 공휴일로 표시되는지 확인한다', async () => {
+    const monthViewBtn = screen.getByLabelText('view');
+    await userEvent.selectOptions(monthViewBtn, 'month');
+
+    const prevBtn = screen.getByLabelText('Previous');
+    await userEvent.click(prevBtn);
+
+    expect(screen.getByText('2025년 1월')).toBeInTheDocument();
+
+    const monthView = screen.getByTestId('month-view');
+    expect(within(monthView).getByText('신정')).toBeInTheDocument();
+  });
 });
 
 describe('검색 기능', () => {

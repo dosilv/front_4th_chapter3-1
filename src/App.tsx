@@ -191,6 +191,7 @@ function App() {
                       const isNotified = notifiedEvents.includes(event.id);
                       return (
                         <Box
+                          data-testid="event-item"
                           key={event.id}
                           p={1}
                           my={1}
@@ -260,6 +261,7 @@ function App() {
                             const isNotified = notifiedEvents.includes(event.id);
                             return (
                               <Box
+                                data-testid="event-item"
                                 key={event.id}
                                 p={1}
                                 my={1}
