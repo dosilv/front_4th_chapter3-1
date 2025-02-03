@@ -20,6 +20,11 @@ beforeAll(() => {
 beforeEach(() => {
   setupMockHandlerCreation(events as Event[]);
   userEvent.setup();
+  render(
+    <ChakraProvider>
+      <App />
+    </ChakraProvider>
+  );
 });
 
 afterAll(() => {
@@ -27,25 +32,19 @@ afterAll(() => {
 });
 
 describe('일정 CRUD 및 기본 기능', () => {
+  // 🧚🏻‍♀️ 공통적으로 필요한 input 요소 추출
+  const getFormElements = () => ({
+    titleInput: screen.getByLabelText('제목'),
+    dateInput: screen.getByLabelText('날짜'),
+    startTimeInput: screen.getByLabelText('시작 시간'),
+    endTimeInput: screen.getByLabelText('종료 시간'),
+    descriptionInput: screen.getByLabelText('설명'),
+    locationInput: screen.getByLabelText('위치'),
+    categoryInput: screen.getByLabelText('카테고리'),
+    notificationTimeInput: screen.getByLabelText('알림 설정'),
+  });
+
   it('입력한 새로운 일정 정보에 맞춰 모든 필드가 이벤트 리스트에 정확히 저장된다.', async () => {
-    // ! HINT. event를 추가 제거하고 저장하는 로직을 잘 살펴보고, 만약 그대로 구현한다면 어떤 문제가 있을 지 고민해보세요.
-
-    render(
-      <ChakraProvider>
-        <App />
-      </ChakraProvider>
-    );
-
-    const titleInput = screen.getByLabelText('제목');
-    const dateInput = screen.getByLabelText('날짜') as HTMLInputElement;
-    const startTimeInput = screen.getByLabelText('시작 시간');
-    const endTimeInput = screen.getByLabelText('종료 시간');
-    const descriptionInput = screen.getByLabelText('설명');
-    const locationInput = screen.getByLabelText('위치');
-    const categoryInput = screen.getByLabelText('카테고리');
-    const notificationTimeInput = screen.getByLabelText('알림 설정');
-    const addBtn = screen.getByRole('button', { name: '일정 추가' });
-
     const TITLE = '즐거운 과제 시간 🔥';
     const DATE = '2025-02-03';
     const START_TIME = '20:00';
@@ -55,30 +54,27 @@ describe('일정 CRUD 및 기본 기능', () => {
     const CATEGORY = '개인';
     const NOTIFICATION_TIME = '1시간 전';
 
-    await userEvent.click(titleInput);
+    const {
+      titleInput,
+      dateInput,
+      startTimeInput,
+      endTimeInput,
+      descriptionInput,
+      locationInput,
+      categoryInput,
+      notificationTimeInput,
+    } = getFormElements();
+
     await userEvent.type(titleInput, TITLE);
-
-    await userEvent.click(dateInput);
-    await userEvent.keyboard(DATE);
-
-    await userEvent.click(startTimeInput);
+    await userEvent.type(dateInput, DATE);
     await userEvent.type(startTimeInput, START_TIME);
-
-    await userEvent.click(endTimeInput);
     await userEvent.type(endTimeInput, END_TIME);
-
-    await userEvent.click(descriptionInput);
     await userEvent.type(descriptionInput, DESCRIPTION);
-
-    await userEvent.click(locationInput);
     await userEvent.type(locationInput, LOCATION);
-
-    await userEvent.click(categoryInput);
     await userEvent.selectOptions(categoryInput, CATEGORY);
-
-    await userEvent.click(notificationTimeInput);
     await userEvent.selectOptions(notificationTimeInput, NOTIFICATION_TIME);
 
+    const addBtn = screen.getByRole('button', { name: '일정 추가' });
     await userEvent.click(addBtn);
 
     const eventList = screen.getByTestId('event-list');
@@ -93,21 +89,6 @@ describe('일정 CRUD 및 기본 기능', () => {
   });
 
   it('기존 일정의 세부 정보를 수정하고 변경사항이 정확히 반영된다', async () => {
-    render(
-      <ChakraProvider>
-        <App />
-      </ChakraProvider>
-    );
-
-    const titleInput = screen.getByLabelText('제목');
-    const dateInput = screen.getByLabelText('날짜') as HTMLInputElement;
-    const startTimeInput = screen.getByLabelText('시작 시간');
-    const endTimeInput = screen.getByLabelText('종료 시간');
-    const descriptionInput = screen.getByLabelText('설명');
-    const locationInput = screen.getByLabelText('위치');
-    const categoryInput = screen.getByLabelText('카테고리');
-    const notificationTimeInput = screen.getByLabelText('알림 설정');
-
     const EDITED_TITLE = '야근 😫';
     const EDITED_DATE = '2025-02-03';
     const EDITED_START_TIME = '20:00';
@@ -117,44 +98,45 @@ describe('일정 CRUD 및 기본 기능', () => {
     const EDITED_CATEGORY = '업무';
     const EDITED_NOTIFICATION_TIME = '10분 전';
 
-    const eventList = screen.getByTestId('event-list');
+    const {
+      titleInput,
+      dateInput,
+      startTimeInput,
+      endTimeInput,
+      descriptionInput,
+      locationInput,
+      categoryInput,
+      notificationTimeInput,
+    } = getFormElements();
 
+    const eventList = screen.getByTestId('event-list');
     // 💡 이벤트 데이터가 로드되어야 보이는 버튼이므로 findeByRole로 찾기
     const editModeBtn = await within(eventList).findByRole('button', { name: 'Edit event' });
     await userEvent.click(editModeBtn);
 
-    const editBtn = screen.getByRole('button', { name: '일정 수정' });
-
-    await userEvent.click(titleInput);
     await userEvent.clear(titleInput);
     await userEvent.type(titleInput, EDITED_TITLE);
 
-    await userEvent.click(dateInput);
     await userEvent.clear(dateInput);
     await userEvent.keyboard(EDITED_DATE);
 
-    await userEvent.click(startTimeInput);
     await userEvent.clear(startTimeInput);
     await userEvent.type(startTimeInput, EDITED_START_TIME);
 
-    await userEvent.click(endTimeInput);
     await userEvent.clear(endTimeInput);
     await userEvent.type(endTimeInput, EDITED_END_TIME);
 
-    await userEvent.click(descriptionInput);
     await userEvent.clear(descriptionInput);
     await userEvent.type(descriptionInput, EDITED_DESCRIPTION);
 
-    await userEvent.click(locationInput);
     await userEvent.clear(locationInput);
     await userEvent.type(locationInput, EDITED_LOCATION);
 
     await userEvent.click(categoryInput);
-    await userEvent.selectOptions(categoryInput, EDITED_CATEGORY);
 
-    await userEvent.click(notificationTimeInput);
     await userEvent.selectOptions(notificationTimeInput, EDITED_NOTIFICATION_TIME);
 
+    const editBtn = screen.getByRole('button', { name: '일정 수정' });
     await userEvent.click(editBtn);
 
     expect(await within(eventList).findByText(EDITED_TITLE)).toBeInTheDocument();
@@ -167,12 +149,6 @@ describe('일정 CRUD 및 기본 기능', () => {
   });
 
   it('일정을 삭제하고 더 이상 조회되지 않는지 확인한다', async () => {
-    render(
-      <ChakraProvider>
-        <App />
-      </ChakraProvider>
-    );
-
     const eventList = screen.getByTestId('event-list');
 
     const deleteBtn = await within(eventList).findByRole('button', { name: 'Delete event' });
