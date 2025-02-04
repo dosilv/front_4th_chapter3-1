@@ -9,15 +9,17 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { RefObject, ForwardRefRenderFunction } from 'react';
+import { useShallow } from 'zustand/shallow';
 
-import { Event } from '../types';
+import { useEventFormStore } from '../hooks/useEventFormStore';
+import { Event, EventForm } from '../types';
 
 interface OverlapWarningDialogProps {
   isOpen: boolean;
   cancelRef: RefObject<HTMLButtonElement>;
   overlappingEvents: Event[];
   onClose: () => void;
-  onSaveEvent: () => void;
+  onSaveEvent: (event: Event | EventForm) => void;
 }
 
 const OverlapWarningDialog: ForwardRefRenderFunction<HTMLDivElement, OverlapWarningDialogProps> = ({
@@ -27,6 +29,38 @@ const OverlapWarningDialog: ForwardRefRenderFunction<HTMLDivElement, OverlapWarn
   onClose,
   onSaveEvent,
 }) => {
+  const {
+    title,
+    date,
+    startTime,
+    endTime,
+    description,
+    location,
+    category,
+    isRepeating,
+    repeatType,
+    repeatInterval,
+    repeatEndDate,
+    notificationTime,
+    editingEvent,
+  } = useEventFormStore(
+    useShallow((state) => ({
+      title: state.title,
+      date: state.date,
+      startTime: state.startTime,
+      endTime: state.endTime,
+      description: state.description,
+      location: state.location,
+      category: state.category,
+      isRepeating: state.isRepeating,
+      repeatType: state.repeatType,
+      repeatInterval: state.repeatInterval,
+      repeatEndDate: state.repeatEndDate,
+      notificationTime: state.notificationTime,
+      editingEvent: state.editingEvent,
+    }))
+  );
+
   return (
     <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
       <AlertDialogOverlay>
@@ -53,7 +87,22 @@ const OverlapWarningDialog: ForwardRefRenderFunction<HTMLDivElement, OverlapWarn
               colorScheme="red"
               onClick={() => {
                 onClose();
-                onSaveEvent();
+                onSaveEvent({
+                  id: editingEvent ? editingEvent.id : undefined,
+                  title,
+                  date,
+                  startTime,
+                  endTime,
+                  description,
+                  location,
+                  category,
+                  repeat: {
+                    type: isRepeating ? repeatType : 'none',
+                    interval: repeatInterval,
+                    endDate: repeatEndDate || undefined,
+                  },
+                  notificationTime,
+                });
               }}
               ml={3}
             >

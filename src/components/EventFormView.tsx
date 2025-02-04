@@ -69,37 +69,7 @@ export const EventFormView = ({
     handleStartTimeChange,
     handleEndTimeChange,
     resetForm,
-  } = useEventFormStore(
-    useShallow((state) => ({
-      title: state.title,
-      setTitle: state.setTitle,
-      date: state.date,
-      setDate: state.setDate,
-      startTime: state.startTime,
-      endTime: state.endTime,
-      description: state.description,
-      setDescription: state.setDescription,
-      location: state.location,
-      setLocation: state.setLocation,
-      category: state.category,
-      setCategory: state.setCategory,
-      isRepeating: state.isRepeating,
-      setIsRepeating: state.setIsRepeating,
-      repeatType: state.repeatType,
-      setRepeatType: state.setRepeatType,
-      repeatInterval: state.repeatInterval,
-      setRepeatInterval: state.setRepeatInterval,
-      repeatEndDate: state.repeatEndDate,
-      setRepeatEndDate: state.setRepeatEndDate,
-      notificationTime: state.notificationTime,
-      setNotificationTime: state.setNotificationTime,
-      timeError: state.timeError,
-      editingEvent: state.editingEvent,
-      handleStartTimeChange: state.handleStartTimeChange,
-      handleEndTimeChange: state.handleEndTimeChange,
-      resetForm: state.resetForm,
-    }))
-  );
+  } = useEventFormStore(useShallow(({ editEvent, setEditingEvent, ...rest }) => rest));
 
   const toast = useToast();
 

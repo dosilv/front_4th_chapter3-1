@@ -32,35 +32,8 @@ import { Event } from './types';
 const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
 function App() {
-  const {
-    title,
-    date,
-    startTime,
-    endTime,
-    description,
-    location,
-    category,
-    isRepeating,
-    repeatType,
-    repeatInterval,
-    repeatEndDate,
-    notificationTime,
-    editingEvent,
-    setEditingEvent,
-  } = useEventFormStore(
+  const { editingEvent, setEditingEvent } = useEventFormStore(
     useShallow((state) => ({
-      title: state.title,
-      date: state.date,
-      startTime: state.startTime,
-      endTime: state.endTime,
-      description: state.description,
-      location: state.location,
-      category: state.category,
-      isRepeating: state.isRepeating,
-      repeatType: state.repeatType,
-      repeatInterval: state.repeatInterval,
-      repeatEndDate: state.repeatEndDate,
-      notificationTime: state.notificationTime,
       editingEvent: state.editingEvent,
       setEditingEvent: state.setEditingEvent,
     }))
@@ -145,24 +118,7 @@ function App() {
         cancelRef={cancelRef}
         overlappingEvents={overlappingEvents}
         onClose={() => setIsOverlapDialogOpen(false)}
-        onSaveEvent={() =>
-          saveEvent({
-            id: editingEvent ? editingEvent.id : undefined,
-            title,
-            date,
-            startTime,
-            endTime,
-            description,
-            location,
-            category,
-            repeat: {
-              type: isRepeating ? repeatType : 'none',
-              interval: repeatInterval,
-              endDate: repeatEndDate || undefined,
-            },
-            notificationTime,
-          })
-        }
+        onSaveEvent={saveEvent}
       />
 
       {notifications.length > 0 && (
