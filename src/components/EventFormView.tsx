@@ -11,8 +11,9 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
+import { useShallow } from 'zustand/react/shallow';
 
-import { useEventForm } from '../hooks/useEventForm';
+import { useEventFormStore } from '../hooks/useEventFormStore';
 import { Event, EventForm, RepeatType } from '../types';
 import { findOverlappingEvents } from '../utils/eventOverlap';
 import { getTimeErrorMessage } from '../utils/timeValidation';
@@ -27,7 +28,7 @@ const notificationOptions = [
   { value: 1440, label: '1일 전' },
 ];
 
-interface EventFormProps {
+interface EventFormViewProps {
   events: Event[];
   saveEvent: (event: Event | EventForm) => Promise<void>;
   setOverlappingEvents: (events: Event[]) => void;
@@ -39,7 +40,7 @@ export const EventFormView = ({
   saveEvent,
   setOverlappingEvents,
   setIsOverlapDialogOpen,
-}: EventFormProps) => {
+}: EventFormViewProps) => {
   const {
     title,
     setTitle,
@@ -63,13 +64,42 @@ export const EventFormView = ({
     setRepeatEndDate,
     notificationTime,
     setNotificationTime,
-    startTimeError,
-    endTimeError,
+    timeError: { startTimeError, endTimeError },
     editingEvent,
     handleStartTimeChange,
     handleEndTimeChange,
     resetForm,
-  } = useEventForm();
+  } = useEventFormStore(
+    useShallow((state) => ({
+      title: state.title,
+      setTitle: state.setTitle,
+      date: state.date,
+      setDate: state.setDate,
+      startTime: state.startTime,
+      endTime: state.endTime,
+      description: state.description,
+      setDescription: state.setDescription,
+      location: state.location,
+      setLocation: state.setLocation,
+      category: state.category,
+      setCategory: state.setCategory,
+      isRepeating: state.isRepeating,
+      setIsRepeating: state.setIsRepeating,
+      repeatType: state.repeatType,
+      setRepeatType: state.setRepeatType,
+      repeatInterval: state.repeatInterval,
+      setRepeatInterval: state.setRepeatInterval,
+      repeatEndDate: state.repeatEndDate,
+      setRepeatEndDate: state.setRepeatEndDate,
+      notificationTime: state.notificationTime,
+      setNotificationTime: state.setNotificationTime,
+      timeError: state.timeError,
+      editingEvent: state.editingEvent,
+      handleStartTimeChange: state.handleStartTimeChange,
+      handleEndTimeChange: state.handleEndTimeChange,
+      resetForm: state.resetForm,
+    }))
+  );
 
   const toast = useToast();
 

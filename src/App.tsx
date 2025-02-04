@@ -30,10 +30,11 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useRef, useState } from 'react';
+import { useShallow } from 'zustand/shallow';
 
 import { WeekView, MonthView, EventFormView } from './components/index.ts';
 import { useCalendarView } from './hooks/useCalendarView.ts';
-import { useEventForm } from './hooks/useEventForm.ts';
+import { useEventFormStore } from './hooks/useEventFormStore.ts';
 import { useEventOperations } from './hooks/useEventOperations.ts';
 import { useNotifications } from './hooks/useNotifications.ts';
 import { useSearch } from './hooks/useSearch.ts';
@@ -66,7 +67,25 @@ function App() {
     editingEvent,
     setEditingEvent,
     editEvent,
-  } = useEventForm();
+  } = useEventFormStore(
+    useShallow((state) => ({
+      title: state.title,
+      date: state.date,
+      startTime: state.startTime,
+      endTime: state.endTime,
+      description: state.description,
+      location: state.location,
+      category: state.category,
+      isRepeating: state.isRepeating,
+      repeatType: state.repeatType,
+      repeatInterval: state.repeatInterval,
+      repeatEndDate: state.repeatEndDate,
+      notificationTime: state.notificationTime,
+      editingEvent: state.editingEvent,
+      setEditingEvent: state.setEditingEvent,
+      editEvent: state.editEvent,
+    }))
+  );
 
   const { events, saveEvent, deleteEvent } = useEventOperations(Boolean(editingEvent), () =>
     setEditingEvent(null)
