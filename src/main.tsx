@@ -1,12 +1,12 @@
 import { ChakraProvider } from '@chakra-ui/react';
+import { setupWorker } from 'msw/browser';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
+import { handlers } from './__mocks__/handlers.ts';
 import App from './App.tsx';
 
 const prepare = async () => {
-  const { setupWorker } = await import('msw/browser');
-  const { handlers } = await import('./__mocks__/handlers');
   const worker = setupWorker(...handlers);
   await worker.start();
 };
