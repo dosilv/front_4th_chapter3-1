@@ -1,23 +1,27 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { render, screen, within, act, cleanup } from '@testing-library/react';
-import { UserEvent, userEvent } from '@testing-library/user-event';
-import { http, HttpResponse } from 'msw';
-import { ReactElement } from 'react';
+import { render, screen, within, act, cleanup, renderHook } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 import { setupMockHandlerCreation } from '../__mocks__/handlersUtils';
 import { events } from '../__mocks__/response/events.json' assert { type: 'json' };
 import App from '../App';
+import { useCalendarViewStore } from '../hooks/useCalendarViewStore';
 import { server } from '../setupTests';
 import { Event } from '../types';
 
 const MOCK_DATE = '2025-02-03';
 
 beforeAll(() => {
-  vi.setSystemTime(new Date(MOCK_DATE));
   server.listen();
 });
 
 beforeEach(() => {
+  vi.setSystemTime(new Date(MOCK_DATE));
+
+  // ⚙️ useCalendarViewStore에서 모킹한 시스템 시간을 사용하도록 설정
+  const { result } = renderHook(() => useCalendarViewStore());
+  act(() => result.current.setCurrentDate(new Date(MOCK_DATE)));
+
   setupMockHandlerCreation(events as Event[]);
   userEvent.setup();
   render(
@@ -25,6 +29,13 @@ beforeEach(() => {
       <App />
     </ChakraProvider>
   );
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+
+  // 🧹 각 테스트가 store를 공유하므로 초기 상태로 복구
+  act(() => useCalendarViewStore.setState(useCalendarViewStore.getInitialState(), true));
 });
 
 afterAll(() => {
@@ -357,11 +368,9 @@ it('notificationTime을 10으로 하면 지정 시간 10분 전 알람 텍스트
     );
   });
 
-  console.log(new Date());
   await act(async () => {
     vi.advanceTimersByTime(1000 * 60);
   });
-  console.log(new Date());
 
   const notification = screen.getByTestId('notification');
   expect(
