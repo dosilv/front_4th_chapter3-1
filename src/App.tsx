@@ -1,17 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Box,
-  CloseButton,
-  Flex,
-  Heading,
-  HStack,
-  IconButton,
-  Select,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Flex, Heading, HStack, IconButton, Select, VStack } from '@chakra-ui/react';
 import { useRef, useState } from 'react';
 import { useShallow } from 'zustand/shallow';
 
@@ -21,6 +9,7 @@ import {
   EventFormView,
   EventListView,
   OverlapWarningDialog,
+  NotificationView,
 } from './components/index.ts';
 import { useCalendarView } from './hooks/useCalendarView.ts';
 import { useEventFormStore } from './hooks/useEventFormStore.ts';
@@ -43,7 +32,7 @@ function App() {
     setEditingEvent(null)
   );
 
-  const { notifications, notifiedEvents, setNotifications } = useNotifications(events);
+  const { notifiedEvents } = useNotifications(events);
   const { view, setView, currentDate, holidays, navigate } = useCalendarView();
   const { searchTerm, filteredEvents, setSearchTerm } = useSearch(events, currentDate, view);
 
@@ -121,27 +110,7 @@ function App() {
         onSaveEvent={saveEvent}
       />
 
-      {notifications.length > 0 && (
-        <VStack position="fixed" top={4} right={4} spacing={2} align="flex-end">
-          {notifications.map((notification, index) => (
-            <Alert
-              data-testid="notification"
-              key={index}
-              status="info"
-              variant="solid"
-              width="auto"
-            >
-              <AlertIcon />
-              <Box flex="1">
-                <AlertTitle fontSize="sm">{notification.message}</AlertTitle>
-              </Box>
-              <CloseButton
-                onClick={() => setNotifications((prev) => prev.filter((_, i) => i !== index))}
-              />
-            </Alert>
-          ))}
-        </VStack>
-      )}
+      <NotificationView events={events} />
     </Box>
   );
 }

@@ -1,0 +1,32 @@
+import { VStack, Alert, AlertIcon, Box, AlertTitle, CloseButton } from '@chakra-ui/react';
+
+import { useNotifications } from '../hooks/useNotifications';
+import { Event } from '../types';
+
+interface NotificationViewProps {
+  events: Event[];
+}
+
+const NotificationView = ({ events }: NotificationViewProps) => {
+  const { notifications, setNotifications } = useNotifications(events);
+
+  return (
+    notifications.length > 0 && (
+      <VStack position="fixed" top={4} right={4} spacing={2} align="flex-end">
+        {notifications.map((notification, index) => (
+          <Alert data-testid="notification" key={index} status="info" variant="solid" width="auto">
+            <AlertIcon />
+            <Box flex="1">
+              <AlertTitle fontSize="sm">{notification.message}</AlertTitle>
+            </Box>
+            <CloseButton
+              onClick={() => setNotifications((prev) => prev.filter((_, i) => i !== index))}
+            />
+          </Alert>
+        ))}
+      </VStack>
+    )
+  );
+};
+
+export default NotificationView;
