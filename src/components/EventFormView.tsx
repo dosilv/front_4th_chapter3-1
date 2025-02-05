@@ -30,15 +30,11 @@ const notificationOptions = [
 ];
 
 interface EventFormViewProps {
-  // events: Event[];
-  // saveEvent: (event: Event | EventForm) => Promise<void>;
   setOverlappingEvents: (events: Event[]) => void;
   setIsOverlapDialogOpen: (open: boolean) => void;
 }
 
 export const EventFormView = ({
-  // events,
-  // saveEvent,
   setOverlappingEvents,
   setIsOverlapDialogOpen,
 }: EventFormViewProps) => {

@@ -36,8 +36,6 @@ function App() {
     <Box w="full" h="100vh" m="auto" p={5}>
       <Flex gap={6} h="full">
         <EventFormView
-          // events={events}
-          // saveEvent={saveEvent}
           setOverlappingEvents={setOverlappingEvents}
           setIsOverlapDialogOpen={setIsOverlapDialogOpen}
         />
@@ -49,7 +47,6 @@ function App() {
           notifiedEvents={notifiedEvents}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
-          // deleteEvent={deleteEvent}
         />
       </Flex>
 
@@ -58,7 +55,6 @@ function App() {
         cancelRef={cancelRef}
         overlappingEvents={overlappingEvents}
         onClose={() => setIsOverlapDialogOpen(false)}
-        // onSaveEvent={saveEvent}
       />
 
       <NotificationView />

@@ -22,7 +22,6 @@ afterEach(() => {
   // 🧹 각 테스트가 store를 공유하므로 초기 상태로 복구
   act(() => useEventFormStore.setState(useEventFormStore.getInitialState(), true));
   act(() => useEventStore.setState(useEventStore.getInitialState(), true));
-  console.log(useEventStore.getState());
 });
 
 it('저장되어있는 초기 이벤트 데이터를 적절하게 불러온다', async () => {
@@ -65,8 +64,6 @@ it("새로 정의된 'title', 'endTime' 기준으로 적절하게 일정이 업�
   const modifiedEvent = { ...INITIAL_EVENTS[0], title: '길어진 미팅 😠', endTime: '12:00' };
 
   await act(async () => await result.current.saveEvent(modifiedEvent));
-
-  console.log(result.current.events);
 
   expect(result.current.events).toEqual([modifiedEvent]);
 });
