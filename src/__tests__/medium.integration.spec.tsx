@@ -6,6 +6,7 @@ import { setupMockHandlerCreation } from '../__mocks__/handlersUtils';
 import { events } from '../__mocks__/response/events.json' assert { type: 'json' };
 import App from '../App';
 import { useCalendarViewStore } from '../hooks/useCalendarViewStore';
+import { useEventStore } from '../hooks/useEventStore';
 import { server } from '../setupTests';
 import { Event } from '../types';
 
@@ -36,6 +37,7 @@ afterEach(() => {
 
   // 🧹 각 테스트가 store를 공유하므로 초기 상태로 복구
   act(() => useCalendarViewStore.setState(useCalendarViewStore.getInitialState(), true));
+  act(() => useEventStore.setState(useEventStore.getInitialState(), true));
 });
 
 afterAll(() => {

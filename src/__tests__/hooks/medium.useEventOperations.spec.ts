@@ -3,10 +3,11 @@ import { http, HttpResponse } from 'msw';
 
 import { setupMockHandlerCreation } from '../../__mocks__/handlersUtils.ts';
 import events from '../../__mocks__/response/events.json';
+import { useEventFormStore } from '../../hooks/useEventFormStore.ts';
 import { useEventOperations } from '../../hooks/useEventOperations.ts';
+import { useEventStore } from '../../hooks/useEventStore.ts';
 import { server } from '../../setupTests.ts';
 import { Event, EventForm } from '../../types.ts';
-
 const INITIAL_EVENTS = events.events as Event[];
 
 beforeAll(() => {
@@ -17,8 +18,15 @@ beforeEach(() => {
   setupMockHandlerCreation(INITIAL_EVENTS);
 });
 
+afterEach(() => {
+  // 🧹 각 테스트가 store를 공유하므로 초기 상태로 복구
+  act(() => useEventFormStore.setState(useEventFormStore.getInitialState(), true));
+  act(() => useEventStore.setState(useEventStore.getInitialState(), true));
+  console.log(useEventStore.getState());
+});
+
 it('저장되어있는 초기 이벤트 데이터를 적절하게 불러온다', async () => {
-  const { result } = await act(async () => renderHook(() => useEventOperations(false, () => {})));
+  const { result } = await act(async () => renderHook(() => useEventOperations()));
 
   expect(result.current.events).toEqual(INITIAL_EVENTS);
 });
@@ -36,7 +44,7 @@ it('정의된 이벤트 정보를 기준으로 적절하게 저장이 된다', a
     notificationTime: 10,
   };
 
-  const { result } = renderHook(() => useEventOperations(false, () => {}));
+  const { result } = renderHook(() => useEventOperations());
 
   await act(async () => await result.current.saveEvent(NEW_EVENT));
 
@@ -50,17 +58,21 @@ it('정의된 이벤트 정보를 기준으로 적절하게 저장이 된다', a
 });
 
 it("새로 정의된 'title', 'endTime' 기준으로 적절하게 일정이 업데이트 된다", async () => {
-  const { result } = renderHook(() => useEventOperations(true, () => {}));
+  const { result } = renderHook(() => useEventOperations());
+  // ⚙️ 수정 모드로 전환
+  act(() => useEventFormStore.setState({ editingEvent: INITIAL_EVENTS[0] }));
 
   const modifiedEvent = { ...INITIAL_EVENTS[0], title: '길어진 미팅 😠', endTime: '12:00' };
 
   await act(async () => await result.current.saveEvent(modifiedEvent));
 
+  console.log(result.current.events);
+
   expect(result.current.events).toEqual([modifiedEvent]);
 });
 
 it('존재하는 이벤트 삭제 시 에러없이 아이템이 삭제된다.', async () => {
-  const { result } = renderHook(() => useEventOperations(false, () => {}));
+  const { result } = renderHook(() => useEventOperations());
 
   await act(async () => await result.current.deleteEvent(INITIAL_EVENTS[0].id));
 
@@ -85,7 +97,7 @@ describe('네트워크 에러 처리', () => {
     );
 
     await act(async () => {
-      renderHook(() => useEventOperations(false, () => {}));
+      renderHook(() => useEventOperations());
     });
 
     expect(mockToast).toHaveBeenCalledWith(
@@ -114,7 +126,9 @@ describe('네트워크 에러 처리', () => {
       })
     );
 
-    const { result } = renderHook(() => useEventOperations(true, () => {}));
+    const { result } = renderHook(() => useEventOperations());
+    // ⚙️ 수정 모드로 전환
+    act(() => useEventFormStore.setState({ editingEvent: INITIAL_EVENTS[0] }));
 
     await act(async () => await result.current.saveEvent(newEvent));
 
@@ -132,7 +146,7 @@ describe('네트워크 에러 처리', () => {
       })
     );
 
-    const { result } = renderHook(() => useEventOperations(false, () => {}));
+    const { result } = await act(async () => renderHook(() => useEventOperations()));
 
     await act(async () => await result.current.deleteEvent(INITIAL_EVENTS[0].id));
 
