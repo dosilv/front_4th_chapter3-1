@@ -21,6 +21,7 @@ interface EventFormState {
   notificationTime: number;
   editingEvent: Event | null;
   timeError: TimeErrorRecord;
+  overlappingEvents: Event[];
 }
 
 interface EventFormActions {
@@ -41,6 +42,7 @@ interface EventFormActions {
   editEvent: (event: Event) => void;
   handleStartTimeChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleEndTimeChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  setOverlappingEvents: (overlappingEvents: Event[]) => void;
 }
 
 interface EventFormStore extends EventFormState, EventFormActions {}
@@ -63,6 +65,7 @@ const initialState: EventFormState = {
     startTimeError: null,
     endTimeError: null,
   },
+  overlappingEvents: [],
 };
 
 export const useEventFormStore = create<EventFormStore>()((set) => ({
@@ -92,4 +95,5 @@ export const useEventFormStore = create<EventFormStore>()((set) => ({
       endTime: e.target.value,
       timeError: getTimeErrorMessage(startTime, e.target.value),
     })),
+  setOverlappingEvents: (overlappingEvents) => set({ overlappingEvents }),
 }));

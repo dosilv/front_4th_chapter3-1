@@ -30,41 +30,38 @@ const notificationOptions = [
 ];
 
 interface EventFormViewProps {
-  setOverlappingEvents: (events: Event[]) => void;
   setIsOverlapDialogOpen: (open: boolean) => void;
 }
 
-export const EventFormView = ({
-  setOverlappingEvents,
-  setIsOverlapDialogOpen,
-}: EventFormViewProps) => {
+export const EventFormView = ({ setIsOverlapDialogOpen }: EventFormViewProps) => {
   const {
     title,
-    setTitle,
     date,
-    setDate,
     startTime,
     endTime,
     description,
-    setDescription,
     location,
-    setLocation,
     category,
-    setCategory,
     isRepeating,
-    setIsRepeating,
     repeatType,
-    setRepeatType,
     repeatInterval,
-    setRepeatInterval,
     repeatEndDate,
-    setRepeatEndDate,
     notificationTime,
-    setNotificationTime,
     timeError: { startTimeError, endTimeError },
     editingEvent,
+    setTitle,
+    setDate,
+    setDescription,
+    setLocation,
+    setCategory,
+    setIsRepeating,
+    setRepeatType,
+    setRepeatInterval,
+    setRepeatEndDate,
+    setNotificationTime,
     handleStartTimeChange,
     handleEndTimeChange,
+    setOverlappingEvents,
     resetForm,
   } = useEventFormStore(useShallow(({ editEvent, setEditingEvent, ...rest }) => rest));
 

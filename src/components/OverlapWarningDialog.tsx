@@ -13,19 +13,16 @@ import { useShallow } from 'zustand/shallow';
 
 import { useEventFormStore } from '../hooks/useEventFormStore';
 import { useEventOperations } from '../hooks/useEventOperations';
-import { Event } from '../types';
 
 interface OverlapWarningDialogProps {
   isOpen: boolean;
   cancelRef: RefObject<HTMLButtonElement>;
-  overlappingEvents: Event[];
   onClose: () => void;
 }
 
 const OverlapWarningDialog: ForwardRefRenderFunction<HTMLDivElement, OverlapWarningDialogProps> = ({
   isOpen,
   cancelRef,
-  overlappingEvents,
   onClose,
 }) => {
   const {
@@ -42,6 +39,7 @@ const OverlapWarningDialog: ForwardRefRenderFunction<HTMLDivElement, OverlapWarn
     repeatEndDate,
     notificationTime,
     editingEvent,
+    overlappingEvents,
   } = useEventFormStore(
     useShallow((state) => ({
       title: state.title,
@@ -57,6 +55,7 @@ const OverlapWarningDialog: ForwardRefRenderFunction<HTMLDivElement, OverlapWarn
       repeatEndDate: state.repeatEndDate,
       notificationTime: state.notificationTime,
       editingEvent: state.editingEvent,
+      overlappingEvents: state.overlappingEvents,
     }))
   );
 
