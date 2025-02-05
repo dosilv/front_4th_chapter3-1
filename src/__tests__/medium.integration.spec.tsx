@@ -328,11 +328,13 @@ describe('일정 충돌', () => {
     setupMockHandlerCreation(MULTIPLE_EVENTS);
 
     cleanup();
-    render(
-      <ChakraProvider>
-        <App />
-      </ChakraProvider>
-    );
+    await act(async () => {
+      render(
+        <ChakraProvider>
+          <App />
+        </ChakraProvider>
+      );
+    });
 
     const EDITED_START_TIME = '09:00';
 
