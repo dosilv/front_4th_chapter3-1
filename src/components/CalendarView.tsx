@@ -1,8 +1,9 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { Heading, HStack, IconButton, Select, VStack } from '@chakra-ui/react';
+import { useShallow } from 'zustand/shallow';
 
 import { WeekView, MonthView } from './index.ts';
-import { useCalendarView } from '../hooks/useCalendarView.ts';
+import { useCalendarViewStore } from '../hooks/useCalendarViewStore.ts';
 import { Event } from '../types.ts';
 
 const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -13,7 +14,15 @@ interface CalendarViewProps {
 }
 
 const CalendarView = ({ filteredEvents, notifiedEvents }: CalendarViewProps) => {
-  const { view, setView, currentDate, holidays, navigate } = useCalendarView();
+  const { view, setView, currentDate, holidays, navigate } = useCalendarViewStore(
+    useShallow((state) => ({
+      view: state.view,
+      setView: state.setView,
+      currentDate: state.currentDate,
+      holidays: state.holidays,
+      navigate: state.navigate,
+    }))
+  );
 
   return (
     <VStack flex={1} spacing={5} align="stretch">
