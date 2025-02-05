@@ -1,10 +1,17 @@
 import { useToast } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 
 import { Event, EventForm } from '../types';
+import { useEventFormStore } from './useEventFormStore';
+import { useEventStore } from './useEventStore';
 
-export const useEventOperations = (editing: boolean, onSave?: () => void) => {
-  const [events, setEvents] = useState<Event[]>([]);
+export const useEventOperations = () => {
+  const { events, setEvents } = useEventStore();
+  const { editingEvent, setEditingEvent } = useEventFormStore();
+
+  const editing = useMemo(() => Boolean(editingEvent), [editingEvent]);
+  const onSave = useCallback(() => setEditingEvent(null), [setEditingEvent]);
+
   const toast = useToast();
 
   const fetchEvents = async () => {
@@ -48,7 +55,7 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
       }
 
       await fetchEvents();
-      onSave?.();
+      onSave();
       toast({
         title: editing ? '일정이 수정되었습니다.' : '일정이 추가되었습니다.',
         status: 'success',

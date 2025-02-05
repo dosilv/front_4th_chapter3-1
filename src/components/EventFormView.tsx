@@ -14,6 +14,7 @@ import {
 import { useShallow } from 'zustand/react/shallow';
 
 import { useEventFormStore } from '../hooks/useEventFormStore';
+import { useEventOperations } from '../hooks/useEventOperations';
 import { Event, EventForm, RepeatType } from '../types';
 import { findOverlappingEvents } from '../utils/eventOverlap';
 import { getTimeErrorMessage } from '../utils/timeValidation';
@@ -29,15 +30,15 @@ const notificationOptions = [
 ];
 
 interface EventFormViewProps {
-  events: Event[];
-  saveEvent: (event: Event | EventForm) => Promise<void>;
+  // events: Event[];
+  // saveEvent: (event: Event | EventForm) => Promise<void>;
   setOverlappingEvents: (events: Event[]) => void;
   setIsOverlapDialogOpen: (open: boolean) => void;
 }
 
 export const EventFormView = ({
-  events,
-  saveEvent,
+  // events,
+  // saveEvent,
   setOverlappingEvents,
   setIsOverlapDialogOpen,
 }: EventFormViewProps) => {
@@ -70,6 +71,8 @@ export const EventFormView = ({
     handleEndTimeChange,
     resetForm,
   } = useEventFormStore(useShallow(({ editEvent, setEditingEvent, ...rest }) => rest));
+
+  const { events, saveEvent } = useEventOperations();
 
   const toast = useToast();
 

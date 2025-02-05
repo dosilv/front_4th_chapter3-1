@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 
 import { useEventFormStore } from '../hooks/useEventFormStore';
+import { useEventOperations } from '../hooks/useEventOperations';
 import { Event } from '../types';
 
 const notificationOptions = [
@@ -26,7 +27,6 @@ interface EventListViewProps {
   notifiedEvents: string[];
   searchTerm: string;
   setSearchTerm: (value: string) => void;
-  deleteEvent: (id: string) => void;
 }
 
 const EventListView = ({
@@ -34,9 +34,9 @@ const EventListView = ({
   notifiedEvents,
   searchTerm,
   setSearchTerm,
-  deleteEvent,
 }: EventListViewProps) => {
   const editEvent = useEventFormStore((state) => state.editEvent);
+  const { deleteEvent } = useEventOperations();
 
   return (
     <VStack data-testid="event-list" w="500px" h="full" overflowY="auto">

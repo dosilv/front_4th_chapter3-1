@@ -1,13 +1,10 @@
 import { VStack, Alert, AlertIcon, Box, AlertTitle, CloseButton } from '@chakra-ui/react';
 
+import { useEventOperations } from '../hooks/useEventOperations';
 import { useNotifications } from '../hooks/useNotifications';
-import { Event } from '../types';
 
-interface NotificationViewProps {
-  events: Event[];
-}
-
-const NotificationView = ({ events }: NotificationViewProps) => {
+const NotificationView = () => {
+  const { events } = useEventOperations();
   const { notifications, setNotifications } = useNotifications(events);
 
   return (
