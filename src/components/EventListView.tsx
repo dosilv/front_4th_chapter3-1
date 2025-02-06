@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { BellIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import {
   Box,

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { ChangeEvent } from 'react';
 import { create } from 'zustand';
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {
   Button,
   Checkbox,
@@ -64,7 +63,38 @@ export const EventFormView = ({ setIsOverlapDialogOpen }: EventFormViewProps) =>
     handleEndTimeChange,
     setOverlappingEvents,
     resetForm,
-  } = useEventFormStore(useShallow(({ editEvent, setEditingEvent, ...rest }) => rest));
+  } = useEventFormStore(
+    useShallow((state) => ({
+      title: state.title,
+      date: state.date,
+      startTime: state.startTime,
+      endTime: state.endTime,
+      description: state.description,
+      location: state.location,
+      category: state.category,
+      isRepeating: state.isRepeating,
+      repeatType: state.repeatType,
+      repeatInterval: state.repeatInterval,
+      repeatEndDate: state.repeatEndDate,
+      notificationTime: state.notificationTime,
+      timeError: state.timeError,
+      editingEvent: state.editingEvent,
+      setTitle: state.setTitle,
+      setDate: state.setDate,
+      setDescription: state.setDescription,
+      setLocation: state.setLocation,
+      setCategory: state.setCategory,
+      setIsRepeating: state.setIsRepeating,
+      setRepeatType: state.setRepeatType,
+      setRepeatInterval: state.setRepeatInterval,
+      setRepeatEndDate: state.setRepeatEndDate,
+      setNotificationTime: state.setNotificationTime,
+      handleStartTimeChange: state.handleStartTimeChange,
+      handleEndTimeChange: state.handleEndTimeChange,
+      setOverlappingEvents: state.setOverlappingEvents,
+      resetForm: state.resetForm,
+    }))
+  );
 
   const { events, saveEvent } = useEventOperations();
 
