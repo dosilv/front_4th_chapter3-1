@@ -55,6 +55,7 @@ const CalendarView = ({ filteredEvents, notifiedEvents }: CalendarViewProps) => 
           filteredEvents={filteredEvents}
           notifiedEvents={notifiedEvents}
           weekDays={weekDays}
+          holidays={holidays}
         />
       )}
       {view === 'month' && (

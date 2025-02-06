@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import { fetchHolidays } from '../apis/fetchHolidays';
+import { fetchHolidaysAtWeek } from '../apis/fetchHolidaysAtWeek';
 
 interface CalendarViewState {
   view: 'week' | 'month';
@@ -23,11 +24,18 @@ const initialState: CalendarViewState = {
   holidays: {},
 };
 
-export const useCalendarViewStore = create<CalendarViewStore>()((set) => {
+export const useCalendarViewStore = create<CalendarViewStore>()((set, get) => {
+  const getHolidays = (date: Date) =>
+    get().view === 'week' ? fetchHolidaysAtWeek(date) : fetchHolidays(date);
+
   return {
     ...initialState,
     setView: (view) => set({ view }),
-    setCurrentDate: (currentDate) => set({ currentDate, holidays: fetchHolidays(currentDate) }),
+    setCurrentDate: (currentDate) =>
+      set({
+        currentDate,
+        holidays: getHolidays(currentDate),
+      }),
     setHolidays: (holidays) => set({ holidays }),
     navigate: (direction: 'prev' | 'next') =>
       set(({ view, currentDate }) => {
@@ -38,7 +46,10 @@ export const useCalendarViewStore = create<CalendarViewStore>()((set) => {
           newDate.setDate(1); // 항상 1일로 설정
           newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1));
         }
-        return { currentDate: newDate, holidays: fetchHolidays(newDate) };
+        return {
+          currentDate: newDate,
+          holidays: getHolidays(newDate),
+        };
       }),
   };
 });
