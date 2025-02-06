@@ -26,6 +26,7 @@ afterEach(() => {
 
 it('저장되어있는 초기 이벤트 데이터를 적절하게 불러온다', async () => {
   const { result } = await act(async () => renderHook(() => useEventOperations()));
+  await act(async () => result.current.init());
 
   expect(result.current.events).toEqual(INITIAL_EVENTS);
 });
@@ -93,9 +94,9 @@ describe('네트워크 에러 처리', () => {
       })
     );
 
-    await act(async () => {
-      renderHook(() => useEventOperations());
-    });
+    const { result } = renderHook(() => useEventOperations());
+
+    await act(async () => result.current.init());
 
     expect(mockToast).toHaveBeenCalledWith(
       expect.objectContaining({

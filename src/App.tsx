@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/shallow';
 
 import {
@@ -15,7 +15,7 @@ import { useNotifications } from './hooks/useNotifications.ts';
 import { useSearch } from './hooks/useSearch.ts';
 
 function App() {
-  const { events } = useEventOperations();
+  const { events, init } = useEventOperations();
   const { notifiedEvents } = useNotifications(events);
 
   const { view, currentDate } = useCalendarViewStore(
@@ -29,6 +29,10 @@ function App() {
 
   const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    init();
+  }, [init]);
 
   return (
     <Box w="full" h="100vh" m="auto" p={5}>
