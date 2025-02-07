@@ -12,26 +12,31 @@ import {
   Tr,
   VStack,
 } from '@chakra-ui/react';
+import React from 'react';
+import { useShallow } from 'zustand/shallow';
 
-import { Event } from '../types';
+import { useCalendarViewStore } from '../hooks/useCalendarViewStore';
+import { useEventStore } from '../hooks/useEventStore';
 import { formatDate, formatMonth, getEventsForDay, getWeeksAtMonth } from '../utils/dateUtils';
 
-interface MonthViewProps {
-  currentDate: Date;
-  weekDays: string[];
-  filteredEvents: Event[];
-  notifiedEvents: string[];
-  holidays: Record<string, string>;
-}
+const MonthView = () => {
+  const { filteredEvents, notifiedEvents } = useEventStore(
+    useShallow((state) => ({
+      filteredEvents: state.filteredEvents,
+      notifiedEvents: state.notifiedEvents,
+    }))
+  );
+  console.log(filteredEvents);
+  const { currentDate, holidays } = useCalendarViewStore(
+    useShallow((state) => ({
+      currentDate: state.currentDate,
+      holidays: state.holidays,
+    }))
+  );
+  const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
-const MonthView = ({
-  currentDate,
-  weekDays,
-  filteredEvents,
-  notifiedEvents,
-  holidays,
-}: MonthViewProps) => {
   const weeks = getWeeksAtMonth(currentDate);
+  console.log(filteredEvents);
 
   return (
     <VStack data-testid="month-view" align="stretch" w="full" spacing={4}>
@@ -104,4 +109,4 @@ const MonthView = ({
   );
 };
 
-export default MonthView;
+export default React.memo(MonthView);

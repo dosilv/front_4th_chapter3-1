@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 
+import { useEventStore } from '../../hooks/useEventStore.ts';
 import { useSearch } from '../../hooks/useSearch.ts';
 import { Event } from '../../types.ts';
 
@@ -70,10 +71,13 @@ const MOCK_DATE = '2025-02-01';
 
 // 공통 renderHook 로직 추출
 const getRenderedHook = (view: 'week' | 'month') => {
+  const { result: storeResult } = renderHook(() => useEventStore());
   const { result } = renderHook(() => useSearch(mockEvents, new Date(), view));
+
   return {
     result,
     setSearchTerm: result.current.setSearchTerm,
+    storeResult,
   };
 };
 
@@ -83,66 +87,70 @@ beforeAll(() => {
 });
 
 it('검색어가 비어있을 때 모든 이벤트를 반환해야 한다', () => {
-  const { result, setSearchTerm } = getRenderedHook('month');
-  act(() => setSearchTerm(''));
+  const { setSearchTerm, storeResult } = getRenderedHook('month');
 
-  expect(result.current.filteredEvents).toEqual(mockEvents);
+  act(() => {
+    setSearchTerm('');
+  });
+
+  expect(storeResult.current.filteredEvents).toEqual(mockEvents);
 });
 
 it('검색어에 맞는 이벤트만 필터링해야 한다', () => {
-  const { result, setSearchTerm } = getRenderedHook('month');
+  const { setSearchTerm, storeResult } = getRenderedHook('month');
 
-  act(() => setSearchTerm('생일 파티 🎉'));
+  act(() => {
+    setSearchTerm('생일 파티 🎉');
+  });
 
-  expect(result.current.filteredEvents).toEqual([mockEvents[3]]);
+  expect(storeResult.current.filteredEvents).toEqual([mockEvents[3]]);
 });
 
 describe('검색어가 제목, 설명, 위치 중 하나라도 일치하면 해당 이벤트를 반환해야 한다', () => {
   it('검색어가 제목과 일치하면 해당 이벤트를 반환해야 한다', () => {
-    const { result, setSearchTerm } = getRenderedHook('month');
-
+    const { setSearchTerm, storeResult } = getRenderedHook('month');
     act(() => setSearchTerm('팀'));
 
-    expect(result.current.filteredEvents).toEqual([mockEvents[0]]);
+    expect(storeResult.current.filteredEvents).toEqual([mockEvents[0]]);
   });
 
   it('검색어가 설명과 일치하면 해당 이벤트를 반환해야 한다', () => {
-    const { result, setSearchTerm } = getRenderedHook('month');
-
+    const { setSearchTerm, storeResult } = getRenderedHook('month');
     act(() => setSearchTerm('동료'));
 
-    expect(result.current.filteredEvents).toEqual([mockEvents[1]]);
+    expect(storeResult.current.filteredEvents).toEqual([mockEvents[1]]);
   });
 
   it('검색어가 위치와 일치하면 해당 이벤트를 반환해야 한다', () => {
-    const { result, setSearchTerm } = getRenderedHook('month');
-
+    const { setSearchTerm, storeResult } = getRenderedHook('month');
     act(() => setSearchTerm('사무실'));
 
-    expect(result.current.filteredEvents).toEqual([mockEvents[2]]);
+    expect(storeResult.current.filteredEvents).toEqual([mockEvents[2]]);
   });
 });
 
 describe('현재 뷰(주간/월간)에 해당하는 이벤트만 반환해야 한다', () => {
   it('현재 뷰(주간)에 해당하는 이벤트만 반환해야 한다', () => {
-    const { result } = getRenderedHook('week');
+    const { setSearchTerm, storeResult } = getRenderedHook('week');
+    act(() => setSearchTerm(''));
 
-    expect(result.current.filteredEvents).toEqual([]);
+    expect(storeResult.current.filteredEvents).toEqual([]);
   });
 
   it('현재 뷰(월간)에 해당하는 이벤트만 반환해야 한다', () => {
-    const { result } = getRenderedHook('month');
+    const { setSearchTerm, storeResult } = getRenderedHook('month');
+    act(() => setSearchTerm(''));
 
-    expect(result.current.filteredEvents).toEqual(mockEvents);
+    expect(storeResult.current.filteredEvents).toEqual(mockEvents);
   });
 });
 
 it("검색어를 '회의'에서 '점심'으로 변경하면 필터링된 결과가 즉시 업데이트되어야 한다", () => {
-  const { result, setSearchTerm } = getRenderedHook('month');
+  const { setSearchTerm, storeResult } = getRenderedHook('month');
 
   act(() => setSearchTerm('회의'));
-  expect(result.current.filteredEvents).toEqual([mockEvents[0]]);
+  expect(storeResult.current.filteredEvents).toEqual([mockEvents[0]]);
 
   act(() => setSearchTerm('점심'));
-  expect(result.current.filteredEvents).toEqual([mockEvents[1]]);
+  expect(storeResult.current.filteredEvents).toEqual([mockEvents[1]]);
 });

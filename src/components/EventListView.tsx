@@ -9,10 +9,12 @@ import {
   Input,
   IconButton,
 } from '@chakra-ui/react';
+import React from 'react';
+import { useShallow } from 'zustand/shallow';
 
 import { useEventFormStore } from '../hooks/useEventFormStore';
 import { useEventOperations } from '../hooks/useEventOperations';
-import { Event } from '../types';
+import { useEventStore } from '../hooks/useEventStore';
 
 const notificationOptions = [
   { value: 1, label: '1분 전' },
@@ -23,19 +25,18 @@ const notificationOptions = [
 ];
 
 interface EventListViewProps {
-  filteredEvents: Event[];
-  notifiedEvents: string[];
   searchTerm: string;
   setSearchTerm: (value: string) => void;
 }
 
-const EventListView = ({
-  filteredEvents,
-  notifiedEvents,
-  searchTerm,
-  setSearchTerm,
-}: EventListViewProps) => {
-  const editEvent = useEventFormStore((state) => state.editEvent);
+const EventListView = ({ searchTerm, setSearchTerm }: EventListViewProps) => {
+  const editEvent = useEventFormStore(useShallow((state) => state.editEvent));
+  const { filteredEvents, notifiedEvents } = useEventStore(
+    useShallow((state) => ({
+      filteredEvents: state.filteredEvents,
+      notifiedEvents: state.notifiedEvents,
+    }))
+  );
   const { deleteEvent } = useEventOperations();
 
   return (
@@ -111,4 +112,4 @@ const EventListView = ({
   );
 };
 
-export default EventListView;
+export default React.memo(EventListView);

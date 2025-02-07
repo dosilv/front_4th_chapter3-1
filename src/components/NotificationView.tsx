@@ -1,4 +1,5 @@
 import { VStack, Alert, AlertIcon, Box, AlertTitle, CloseButton } from '@chakra-ui/react';
+import React from 'react';
 
 import { useEventOperations } from '../hooks/useEventOperations';
 import { useNotifications } from '../hooks/useNotifications';
@@ -26,4 +27,4 @@ const NotificationView = () => {
   );
 };
 
-export default NotificationView;
+export default React.memo(NotificationView);

@@ -8,7 +8,7 @@ import {
   Button,
   Text,
 } from '@chakra-ui/react';
-import { RefObject, ForwardRefRenderFunction } from 'react';
+import React, { ForwardRefRenderFunction, RefObject } from 'react';
 import { useShallow } from 'zustand/shallow';
 
 import { useEventFormStore } from '../hooks/useEventFormStore';
@@ -115,4 +115,4 @@ const OverlapWarningDialog: ForwardRefRenderFunction<HTMLDivElement, OverlapWarn
   );
 };
 
-export default OverlapWarningDialog;
+export default React.memo(OverlapWarningDialog);

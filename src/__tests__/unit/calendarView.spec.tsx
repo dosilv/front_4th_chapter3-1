@@ -1,11 +1,11 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, cleanup, act, renderHook } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { act } from 'react';
-import { vi } from 'vitest';
 
 import CalendarView from '../../components/CalendarView';
 import { useCalendarViewStore } from '../../hooks/useCalendarViewStore';
+import { useEventStore } from '../../hooks/useEventStore';
+import { useSearch } from '../../hooks/useSearch';
 import { Event } from '../../types';
 
 const mockEvents: Event[] = [
@@ -23,16 +23,19 @@ const mockEvents: Event[] = [
   },
 ];
 
-const mockNotifiedEvents: string[] = [];
-
 describe('CalendarView 컴포넌트 테스트', () => {
   beforeEach(async () => {
     vi.setSystemTime(new Date('2025-02-03'));
 
-    render(
-      <ChakraProvider>
-        <CalendarView filteredEvents={mockEvents} notifiedEvents={mockNotifiedEvents} />
-      </ChakraProvider>
+    // ⚠️ useSearch는 App.tsx에서 호출하므로 CalenderView 테스트 시 따로 호출해야 함...🤯
+    renderHook(() => useSearch(mockEvents, new Date(), 'month'));
+
+    act(() =>
+      render(
+        <ChakraProvider>
+          <CalendarView />
+        </ChakraProvider>
+      )
     );
   });
 
@@ -104,11 +107,17 @@ describe('CalendarView 컴포넌트 테스트', () => {
   it('알림이 온 일정은 아이콘이 표시된다', async () => {
     const mockNotifiedEvents: string[] = ['1'];
 
+    const { result } = renderHook(() => useEventStore());
+    await act(async () => result.current.setNotifiedEvents(mockNotifiedEvents));
+
+    cleanup();
     render(
       <ChakraProvider>
-        <CalendarView filteredEvents={mockEvents} notifiedEvents={mockNotifiedEvents} />
+        <CalendarView />
       </ChakraProvider>
     );
+
+    console.log(screen.debug());
 
     const bellIcon = screen.queryByTestId('bell-icon');
     expect(bellIcon).toBeInTheDocument();

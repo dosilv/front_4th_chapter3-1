@@ -11,6 +11,7 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
+import React from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useEventFormStore } from '../hooks/useEventFormStore';
@@ -275,4 +276,4 @@ export const EventFormView = ({ setIsOverlapDialogOpen }: EventFormViewProps) =>
   );
 };
 
-export default EventFormView;
+export default React.memo(EventFormView);

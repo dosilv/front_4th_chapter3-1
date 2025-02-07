@@ -1,13 +1,24 @@
 import { useToast } from '@chakra-ui/react';
 import { useMemo, useCallback } from 'react';
+import { useShallow } from 'zustand/shallow';
 
 import { Event, EventForm } from '../types';
 import { useEventFormStore } from './useEventFormStore';
 import { useEventStore } from './useEventStore';
 
 export const useEventOperations = () => {
-  const { events, setEvents } = useEventStore();
-  const { editingEvent, setEditingEvent } = useEventFormStore();
+  const { events, setEvents } = useEventStore(
+    useShallow((state) => ({
+      events: state.events,
+      setEvents: state.setEvents,
+    }))
+  );
+  const { editingEvent, setEditingEvent } = useEventFormStore(
+    useShallow((state) => ({
+      editingEvent: state.editingEvent,
+      setEditingEvent: state.setEditingEvent,
+    }))
+  );
 
   const editing = useMemo(() => Boolean(editingEvent), [editingEvent]);
   const onSave = useCallback(() => setEditingEvent(null), [setEditingEvent]);

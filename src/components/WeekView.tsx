@@ -12,25 +12,28 @@ import {
   Tr,
   VStack,
 } from '@chakra-ui/react';
+import React from 'react';
+import { useShallow } from 'zustand/shallow';
 
-import { Event } from '../types';
+import { useCalendarViewStore } from '../hooks/useCalendarViewStore';
+import { useEventStore } from '../hooks/useEventStore';
 import { formatWeek, getWeekDates } from '../utils/dateUtils';
 
-interface WeekViewProps {
-  currentDate: Date;
-  weekDays: string[];
-  filteredEvents: Event[];
-  notifiedEvents: string[];
-  holidays: Record<string, string>;
-}
+const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
-const WeekView = ({
-  currentDate,
-  weekDays,
-  filteredEvents,
-  notifiedEvents,
-  holidays,
-}: WeekViewProps) => {
+const WeekView = () => {
+  const { filteredEvents, notifiedEvents } = useEventStore(
+    useShallow((state) => ({
+      filteredEvents: state.filteredEvents,
+      notifiedEvents: state.notifiedEvents,
+    }))
+  );
+  const { currentDate, holidays } = useCalendarViewStore(
+    useShallow((state) => ({
+      currentDate: state.currentDate,
+      holidays: state.holidays,
+    }))
+  );
   const weekDates = getWeekDates(currentDate);
 
   return (
@@ -94,4 +97,4 @@ const WeekView = ({
   );
 };
 
-export default WeekView;
+export default React.memo(WeekView);

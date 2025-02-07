@@ -1,20 +1,13 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { Heading, HStack, IconButton, Select, VStack } from '@chakra-ui/react';
+import React from 'react';
 import { useShallow } from 'zustand/shallow';
 
 import { WeekView, MonthView } from './index.ts';
 import { useCalendarViewStore } from '../hooks/useCalendarViewStore.ts';
-import { Event } from '../types.ts';
 
-const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
-
-interface CalendarViewProps {
-  filteredEvents: Event[];
-  notifiedEvents: string[];
-}
-
-const CalendarView = ({ filteredEvents, notifiedEvents }: CalendarViewProps) => {
-  const { view, setView, currentDate, holidays, navigate } = useCalendarViewStore(
+const CalendarView = () => {
+  const { view, setView, navigate } = useCalendarViewStore(
     useShallow((state) => ({
       view: state.view,
       setView: state.setView,
@@ -49,26 +42,10 @@ const CalendarView = ({ filteredEvents, notifiedEvents }: CalendarViewProps) => 
         />
       </HStack>
 
-      {view === 'week' && (
-        <WeekView
-          currentDate={currentDate}
-          filteredEvents={filteredEvents}
-          notifiedEvents={notifiedEvents}
-          weekDays={weekDays}
-          holidays={holidays}
-        />
-      )}
-      {view === 'month' && (
-        <MonthView
-          currentDate={currentDate}
-          filteredEvents={filteredEvents}
-          notifiedEvents={notifiedEvents}
-          weekDays={weekDays}
-          holidays={holidays}
-        />
-      )}
+      {view === 'week' && <WeekView />}
+      {view === 'month' && <MonthView />}
     </VStack>
   );
 };
 
-export default CalendarView;
+export default React.memo(CalendarView);
